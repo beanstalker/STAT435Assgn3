@@ -1,0 +1,305 @@
+---
+title       : STAT435
+subtitle    : Assignment 3
+author      : Jack Hervey
+job         : STAT435
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+---
+
+## Libraries and Data
+```
+source("http://bioconductor.org/biocLite.R")
+biocLite("pamr")
+biocLite("gplots")
+biocLite("multtest")
+biocLite("survival")
+```
+```{r results='hide'}
+library(survival)
+library(pamr)
+library(gplots)
+library(multtest)
+```
+```
+load("./STAT435-VDVdata.RData")
+```
+
+---
+
+## Rescale data to zero mean and standard deviation 1
+```{r}
+yy<-t(apply(vdv.int,1,function(x) (x-mean(x))/sd(x)))
+yy[yy< -3]<- -3
+yy[yy> 3]<-3
+```
+
+---
+
+## Heatmap of clustered data
+```{r}
+heatmap(yy,distfun=function(x)
+  as.dist(1-cor(t(x))),col=c(rgb(0,seq(1,0,l=25),0),
+  rgb(seq(0,1,l=25),0,0)),labRow="",labCol="")
+```
+
+---
+
+## Heatmap of clustered data
+- There appears to be approximately 3 major gene clusters (side dendrogram).
+
+- There are four distinct groups of patients (top dendrogram).
+
+---
+
+## Split data into 4 groups
+Number of women assigned to each group:
+```{r}
+ctint<-cutree(hclust(as.dist(1-cor(yy))),4)
+table(ctint)
+```
+This is similar to the number of women assigned to the different intrinsic subtypes:
+```{r}
+table(vdv.clin$Intrinsic.Subtype)
+```
+
+---
+
+## Instrinsic subtypes of the four groups
+```{r}
+table(vdv.clin$Intrinsic.Subtype,ctint,dnn=c("Subtype","Group"))
+```
+
+---
+
+## Relapse Rates
+```{r}
+table(vdv.clin$RFS.event,vdv.clin$Intrinsic.Subtype,dnn=c("Relapse rate","Subtype"))
+table(vdv.clin$RFS.event,ctint,dnn=c("Relapse rate","Group"))
+```
+
+---
+
+## Death Rates
+```{r}
+table(vdv.clin$OS.event,vdv.clin$Intrinsic.Subtype,dnn=c("Death rate","Subtype"))
+table(vdv.clin$OS.event,ctint,dnn=c("Death rate","Group"))
+```
+
+---
+
+## Singular value decomposition metagene
+```{r results='hide'}
+xx<-svd(yy)
+attach(xx)
+mg<-svd(yy)$v[,1]
+mg.rnk<-rank(mg)/length(mg)
+mg.col<-greenred(length(mg))[rank(mg)]
+ord<-order(mg.rnk)
+```
+
+---
+
+## Metagene and heatmap
+```{r fig.width=5, fig.height=5}
+heatmap.2(yy[,ord],trace='none',scale='none',Colv=T,Rowv=T,
+          ColSideColors=mg.col[ord],col=greenred(50),labCol=
+            paste("Sample",1:ncol(yy))[ord],labRow=paste("Gene",1:ncol(yy)))
+```
+
+---
+
+## Boxplot showing distribution of metagene values accross intrinsic subtype
+```{r fig.width=5, fig.height=5}
+boxplot(mg.rnk~vdv.clin$Intrinsic.Subtype, xlab="Intrinsic.Subtype", ylab="Metagene Value")
+```
+---
+
+## Boxplot showing distribution of metagene values accross ER status
+```{r fig.width=5, fig.height=5}
+boxplot(mg.rnk~vdv.clin$ER, xlab="ER", ylab="Metagene Value")
+```
+---
+
+## Boxplot showing distribution of metagene values accross grade
+```{r fig.width=5, fig.height=5}
+boxplot(mg.rnk~vdv.clin$Grade, xlab="Grade", ylab="Metagene Value")
+```
+
+---
+
+## Information
+- Subtype and estrogen receptor status appear to gave the greatest impact on proliferation, followed by grade. Tumour grade shows an obvious upward trend, as expected, but the ranges are very broad.
+
+---
+
+## Classification and survival analysis
+Split van de Vijver data into a training set and test set.
+```{r results='hide'}
+tr<-sample(seq(1,295),200)
+ts<-setdiff(1:295, tr)
+tr.dat<-list()
+tr.dat$x<-vdv.genes[,tr]
+tr.dat$y<-vdv.clin$RFS.event[tr]
+ts.dat<-list()
+ts.dat$x<-vdv.genes[,ts]
+ts.dat$y<-vdv.clin$RFS.event[ts]
+```
+
+---
+
+## Relapse and non-relapse class between training and test sets
+```{r}
+table(tr.dat$y)
+table(ts.dat$y)
+```
+
+---
+
+## PAMR and CV plot
+```{r results='hide'}
+train<-pamr.train(tr.dat)
+cv<-pamr.cv(train, tr.dat)
+```
+```{r fig.width=12, fig.height=5}
+pamr.plotcv(cv)
+```
+
+---
+
+## Geneplots
+```{r fig.width=12, fig.height=7}
+pamr.geneplot(train, tr.dat, threshold=2.6)
+```
+
+---
+
+## Predictions
+```{r}
+pred.ts<-pamr.predict(train,ts.dat$x,threshold=1.5)
+table(ts.dat$y,pred.ts)
+pred.tr<-pamr.predict(train,tr.dat$x,threshold=1.5)
+table(tr.dat$y,pred.tr)
+```
+
+---
+  
+## Fisher test on test set
+```{r}
+fisher.test(table(ts.dat$y,pred.ts))
+```
+
+---
+  
+## Fisher test on training set
+```{r}
+fisher.test(table(tr.dat$y,pred.tr))
+```
+
+---
+
+## Sensitivity and specificty
+Test set
+```{r echo=FALSE}
+tspred<-table(ts.dat$y,pred.ts)
+```
+- Sensitivity: `r tspred[2,2]/(tspred[2,2]+tspred[2,1])*100` %
+- Specificity: `r tspred[1,1]/(tspred[1,1]+tspred[1,2])*100` %
+- PPV: `r tspred[2,2]/(tspred[2,2]+tspred[1,2])*100` %
+- NPV: `r tspred[1,1]/(tspred[1,1]+tspred[2,1])*100` %
+
+Training set
+```{r echo=FALSE}
+trpred<-table(tr.dat$y,pred.tr)
+```
+- Sensitivity: `r trpred[2,2]/(trpred[2,2]+trpred[2,1])*100` %
+- Specificity: `r trpred[1,1]/(trpred[1,1]+trpred[1,2])*100` %
+- PPV: `r trpred[2,2]/(trpred[2,2]+trpred[1,2])*100` %
+- NPV: `r trpred[1,1]/(trpred[1,1]+trpred[2,1])*100` %
+
+As expected the training set performs much better, as it was used to create the predictor.
+
+---
+
+## Survival analysis
+```{r}
+tr.clin<-vdv.clin[tr,]
+ts.clin<-vdv.clin[ts,]
+
+```
+
+---
+
+## Survival plot of training set
+```{r}
+plot(survfit(Surv(tr.clin$RFS.months,tr.clin$RFS.event)~pred.tr))
+```
+
+---
+
+## Survival plot of training set
+```{r}
+survdiff(Surv(tr.clin$RFS.months,tr.clin$RFS.event)~pred.tr)
+```
+
+---
+
+## Survival plot of test set
+```{r}
+plot(survfit(Surv(ts.clin$RFS.months,ts.clin$RFS.event)~pred.ts))
+```
+
+---
+
+## Survival plot of test set
+```{r}
+survdiff(Surv(ts.clin$RFS.months,ts.clin$RFS.event)~pred.ts)
+```
+
+---
+
+## Survival plot using Luminal A subtype predictor
+```{r}
+int.pred<-ifelse(vdv.clin$Intrinsic.Subtype=="LumA", 0, 1)
+table(int.pred,vdv.clin$RFS.event)
+```
+
+---
+
+## Survival plot using Luminal A subtype predictor
+```{r}
+fisher.test(table(int.pred,vdv.clin$RFS.event))
+```
+
+---
+
+## Survival plot using Luminal A subtype predictor
+```{r fig.width=6, fig.height=6}
+plot(survfit(Surv(vdv.clin$RFS.months,vdv.clin$RFS.event)~int.pred))
+```
+
+---
+
+## Survival plot using Luminal A subtype predictor
+```{r}
+survdiff(Surv(vdv.clin$RFS.months,vdv.clin$RFS.event)~int.pred)
+```
+
+---
+
+## Sensitivity and specificity of Luminal A subtype predictor
+## Sensitivity and specificty
+```{r echo=FALSE}
+intpred<-table(int.pred,vdv.clin$RFS.event)
+```
+- Sensitivity: `r intpred[2,2]/(intpred[2,2]+intpred[2,1])*100` %
+- Specificity: `r intpred[1,1]/(intpred[1,1]+intpred[1,2])*100` %
+- PPV: `r intpred[2,2]/(intpred[2,2]+intpred[1,2])*100` %
+- NPV: `r intpred[1,1]/(intpred[1,1]+intpred[2,1])*100` %
+
+The Luminal subtype predictor perorms much better than the predictor produced by PAMR. This is to be expected since the subtype has a real biological meaning and therefore related far better to the data collected than the PAMR predictor, which is based off a sample of the total data collected.
+
+---

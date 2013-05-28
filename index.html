@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>STAT435</title>
+  <meta charset="utf-8">
+  <meta name="description" content="STAT435">
+  <meta name="author" content="Jack Hervey">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+    <link rel="stylesheet" href = "assets/css/ribbons.css">
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    <!-- END LOGO SLIDE -->
+    
+
+    <!-- TITLE SLIDE -->
+    <!-- Should I move this to a Local Layout File? -->
+    <slide class="title-slide segue nobackground">
+      <hgroup class="auto-fadein">
+        <h1>STAT435</h1>
+        <h2>Assignment 3</h2>
+        <p>Jack Hervey<br/>STAT435</p>
+      </hgroup>
+          </slide>
+
+    <!-- SLIDES -->
+      <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Libraries and Data</h2>
+  </hgroup>
+  <article>
+    <pre><code>source(&quot;http://bioconductor.org/biocLite.R&quot;)
+biocLite(&quot;pamr&quot;)
+biocLite(&quot;gplots&quot;)
+biocLite(&quot;multtest&quot;)
+biocLite(&quot;survival&quot;)
+</code></pre>
+
+<pre><code class="r">library(survival)
+library(pamr)
+library(gplots)
+library(multtest)
+</code></pre>
+
+<pre><code>load(&quot;./STAT435-VDVdata.RData&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Rescale data to zero mean and standard deviation 1</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">yy &lt;- t(apply(vdv.int, 1, function(x) (x - mean(x))/sd(x)))
+yy[yy &lt; -3] &lt;- -3
+yy[yy &gt; 3] &lt;- 3
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Heatmap of clustered data</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">heatmap(yy, distfun = function(x) as.dist(1 - cor(t(x))), col = c(rgb(0, seq(1, 
+    0, l = 25), 0), rgb(seq(0, 1, l = 25), 0, 0)), labRow = &quot;&quot;, labCol = &quot;&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-3.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Heatmap of clustered data</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li><p>There appears to be approximately 3 major gene clusters (side dendrogram).</p></li>
+<li><p>There are four distinct groups of patients (top dendrogram).</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Split data into 4 groups</h2>
+  </hgroup>
+  <article>
+    <p>Number of women assigned to each group:</p>
+
+<pre><code class="r">ctint &lt;- cutree(hclust(as.dist(1 - cor(yy))), 4)
+table(ctint)
+</code></pre>
+
+<pre><code>## ctint
+##   1   2   3   4 
+##  40  79 114  62
+</code></pre>
+
+<p>This is similar to the number of women assigned to the different intrinsic subtypes:</p>
+
+<pre><code class="r">table(vdv.clin$Intrinsic.Subtype)
+</code></pre>
+
+<pre><code>## 
+##       Basal        HER2        LumA        LumB Normal-like 
+##          53          35         123          69          15
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Instrinsic subtypes of the four groups</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">table(vdv.clin$Intrinsic.Subtype, ctint, dnn = c(&quot;Subtype&quot;, &quot;Group&quot;))
+</code></pre>
+
+<pre><code>##              Group
+## Subtype        1  2  3  4
+##   Basal        1  0 50  2
+##   HER2         9  0 24  2
+##   LumA         3 65 19 36
+##   LumB        27  7 13 22
+##   Normal-like  0  7  8  0
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Relapse Rates</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">table(vdv.clin$RFS.event, vdv.clin$Intrinsic.Subtype, dnn = c(&quot;Relapse rate&quot;, 
+    &quot;Subtype&quot;))
+</code></pre>
+
+<pre><code>##             Subtype
+## Relapse rate Basal HER2 LumA LumB Normal-like
+##            0    26   17   99   28           7
+##            1    27   18   24   41           8
+</code></pre>
+
+<pre><code class="r">table(vdv.clin$RFS.event, ctint, dnn = c(&quot;Relapse rate&quot;, &quot;Group&quot;))
+</code></pre>
+
+<pre><code>##             Group
+## Relapse rate  1  2  3  4
+##            0 17 67 58 35
+##            1 23 12 56 27
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Death Rates</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">table(vdv.clin$OS.event, vdv.clin$Intrinsic.Subtype, dnn = c(&quot;Death rate&quot;, &quot;Subtype&quot;))
+</code></pre>
+
+<pre><code>##           Subtype
+## Death rate Basal HER2 LumA LumB Normal-like
+##          0    28   20  109   46          13
+##          1    25   15   14   23           2
+</code></pre>
+
+<pre><code class="r">table(vdv.clin$OS.event, ctint, dnn = c(&quot;Death rate&quot;, &quot;Group&quot;))
+</code></pre>
+
+<pre><code>##           Group
+## Death rate  1  2  3  4
+##          0 24 73 72 47
+##          1 16  6 42 15
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Singular value decomposition metagene</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">xx &lt;- svd(yy)
+attach(xx)
+mg &lt;- svd(yy)$v[, 1]
+mg.rnk &lt;- rank(mg)/length(mg)
+mg.col &lt;- greenred(length(mg))[rank(mg)]
+ord &lt;- order(mg.rnk)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Metagene and heatmap</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">heatmap.2(yy[, ord], trace = &quot;none&quot;, scale = &quot;none&quot;, Colv = T, Rowv = T, ColSideColors = mg.col[ord], 
+    col = greenred(50), labCol = paste(&quot;Sample&quot;, 1:ncol(yy))[ord], labRow = paste(&quot;Gene&quot;, 
+        1:ncol(yy)))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-10.png" alt="plot of chunk unnamed-chunk-10"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Boxplot showing distribution of metagene values accross intrinsic subtype</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">boxplot(mg.rnk ~ vdv.clin$Intrinsic.Subtype, xlab = &quot;Intrinsic.Subtype&quot;, ylab = &quot;Metagene Value&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-11.png" alt="plot of chunk unnamed-chunk-11"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Boxplot showing distribution of metagene values accross ER status</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">boxplot(mg.rnk ~ vdv.clin$ER, xlab = &quot;ER&quot;, ylab = &quot;Metagene Value&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-12.png" alt="plot of chunk unnamed-chunk-12"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Boxplot showing distribution of metagene values accross grade</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">boxplot(mg.rnk ~ vdv.clin$Grade, xlab = &quot;Grade&quot;, ylab = &quot;Metagene Value&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-13.png" alt="plot of chunk unnamed-chunk-13"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Information</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Subtype and estrogen receptor status appear to gave the greatest impact on proliferation, followed by grade. Tumour grade shows an obvious upward trend, as expected, but the ranges are very broad.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Classification and survival analysis</h2>
+  </hgroup>
+  <article>
+    <p>Split van de Vijver data into a training set and test set.</p>
+
+<pre><code class="r">tr &lt;- sample(seq(1, 295), 200)
+ts &lt;- setdiff(1:295, tr)
+tr.dat &lt;- list()
+tr.dat$x &lt;- vdv.genes[, tr]
+tr.dat$y &lt;- vdv.clin$RFS.event[tr]
+ts.dat &lt;- list()
+ts.dat$x &lt;- vdv.genes[, ts]
+ts.dat$y &lt;- vdv.clin$RFS.event[ts]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Relapse and non-relapse class between training and test sets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">table(tr.dat$y)
+</code></pre>
+
+<pre><code>## 
+##   0   1 
+## 122  78
+</code></pre>
+
+<pre><code class="r">table(ts.dat$y)
+</code></pre>
+
+<pre><code>## 
+##  0  1 
+## 55 40
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>PAMR and CV plot</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">train &lt;- pamr.train(tr.dat)
+cv &lt;- pamr.cv(train, tr.dat)
+</code></pre>
+
+<pre><code class="r">pamr.plotcv(cv)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-17.png" alt="plot of chunk unnamed-chunk-17"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Geneplots</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">pamr.geneplot(train, tr.dat, threshold = 2.6)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-18.png" alt="plot of chunk unnamed-chunk-18"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Predictions</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">pred.ts &lt;- pamr.predict(train, ts.dat$x, threshold = 1.5)
+table(ts.dat$y, pred.ts)
+</code></pre>
+
+<pre><code>##    pred.ts
+##      0  1
+##   0 36 19
+##   1 13 27
+</code></pre>
+
+<pre><code class="r">pred.tr &lt;- pamr.predict(train, tr.dat$x, threshold = 1.5)
+table(tr.dat$y, pred.tr)
+</code></pre>
+
+<pre><code>##    pred.tr
+##      0  1
+##   0 87 35
+##   1 26 52
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Fisher test on test set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">fisher.test(table(ts.dat$y, pred.ts))
+</code></pre>
+
+<pre><code>## 
+##  Fisher&#39;s Exact Test for Count Data
+## 
+## data:  table(ts.dat$y, pred.ts)
+## p-value = 0.001885
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##   1.53 10.27
+## sample estimates:
+## odds ratio 
+##      3.874
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Fisher test on training set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">fisher.test(table(tr.dat$y, pred.tr))
+</code></pre>
+
+<pre><code>## 
+##  Fisher&#39;s Exact Test for Count Data
+## 
+## data:  table(tr.dat$y, pred.tr)
+## p-value = 2.095e-07
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  2.580 9.622
+## sample estimates:
+## odds ratio 
+##      4.927
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Sensitivity and specificty</h2>
+  </hgroup>
+  <article>
+    <p>Test set</p>
+
+<ul>
+<li>Sensitivity: 67.5 %</li>
+<li>Specificity: 65.4545 %</li>
+<li>PPV: 58.6957 %</li>
+<li>NPV: 73.4694 %</li>
+</ul>
+
+<p>Training set</p>
+
+<ul>
+<li>Sensitivity: 66.6667 %</li>
+<li>Specificity: 71.3115 %</li>
+<li>PPV: 59.7701 %</li>
+<li>NPV: 76.9912 %</li>
+</ul>
+
+<p>As expected the training set performs much better, as it was used to create the predictor.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Survival analysis</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">tr.clin &lt;- vdv.clin[tr, ]
+ts.clin &lt;- vdv.clin[ts, ]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Survival plot of training set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">plot(survfit(Surv(tr.clin$RFS.months, tr.clin$RFS.event) ~ pred.tr))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-25.png" alt="plot of chunk unnamed-chunk-25"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>Survival plot of training set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">survdiff(Surv(tr.clin$RFS.months, tr.clin$RFS.event) ~ pred.tr)
+</code></pre>
+
+<pre><code>## Call:
+## survdiff(formula = Surv(tr.clin$RFS.months, tr.clin$RFS.event) ~ 
+##     pred.tr)
+## 
+##             N Observed Expected (O-E)^2/E (O-E)^2/V
+## pred.tr=0 113       26       51      12.3      35.9
+## pred.tr=1  87       52       27      23.2      35.9
+## 
+##  Chisq= 35.9  on 1 degrees of freedom, p= 2.09e-09
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Survival plot of test set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">plot(survfit(Surv(ts.clin$RFS.months, ts.clin$RFS.event) ~ pred.ts))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-27.png" alt="plot of chunk unnamed-chunk-27"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>Survival plot of test set</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">survdiff(Surv(ts.clin$RFS.months, ts.clin$RFS.event) ~ pred.ts)
+</code></pre>
+
+<pre><code>## Call:
+## survdiff(formula = Surv(ts.clin$RFS.months, ts.clin$RFS.event) ~ 
+##     pred.ts)
+## 
+##            N Observed Expected (O-E)^2/E (O-E)^2/V
+## pred.ts=0 49       13     23.1      4.45      10.6
+## pred.ts=1 46       27     16.9      6.11      10.6
+## 
+##  Chisq= 10.6  on 1 degrees of freedom, p= 0.0011
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Survival plot using Luminal A subtype predictor</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">int.pred &lt;- ifelse(vdv.clin$Intrinsic.Subtype == &quot;LumA&quot;, 0, 1)
+table(int.pred, vdv.clin$RFS.event)
+</code></pre>
+
+<pre><code>##         
+## int.pred  0  1
+##        0 99 24
+##        1 78 94
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Survival plot using Luminal A subtype predictor</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">fisher.test(table(int.pred, vdv.clin$RFS.event))
+</code></pre>
+
+<pre><code>## 
+##  Fisher&#39;s Exact Test for Count Data
+## 
+## data:  table(int.pred, vdv.clin$RFS.event)
+## p-value = 1.012e-09
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##  2.823 8.894
+## sample estimates:
+## odds ratio 
+##      4.943
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Survival plot using Luminal A subtype predictor</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">plot(survfit(Surv(vdv.clin$RFS.months, vdv.clin$RFS.event) ~ int.pred))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-31.png" alt="plot of chunk unnamed-chunk-31"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Survival plot using Luminal A subtype predictor</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">survdiff(Surv(vdv.clin$RFS.months, vdv.clin$RFS.event) ~ int.pred)
+</code></pre>
+
+<pre><code>## Call:
+## survdiff(formula = Surv(vdv.clin$RFS.months, vdv.clin$RFS.event) ~ 
+##     int.pred)
+## 
+##              N Observed Expected (O-E)^2/E (O-E)^2/V
+## int.pred=0 123       24     56.3      18.5      35.5
+## int.pred=1 172       94     61.7      16.9      35.5
+## 
+##  Chisq= 35.5  on 1 degrees of freedom, p= 2.5e-09
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Sensitivity and specificity of Luminal A subtype predictor</h2>
+  </hgroup>
+  <article>
+    <h2>Sensitivity and specificty</h2>
+
+<ul>
+<li>Sensitivity: 54.6512 %</li>
+<li>Specificity: 80.4878 %</li>
+<li>PPV: 79.661 %</li>
+<li>NPV: 55.9322 %</li>
+</ul>
+
+<p>The Luminal subtype predictor perorms much better than the predictor produced by PAMR. This is to be expected since the subtype has a real biological meaning and therefore related far better to the data collected than the PAMR predictor, which is based off a sample of the total data collected.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    
+  </hgroup>
+  <article>
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+
+  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+<!-- Grab CDN jQuery, fall back to local if offline -->
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+<script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery-1.7.min.js"><\/script>')</script>
+<!-- Load Javascripts for Widgets -->
+<!-- LOAD HIGHLIGHTER JS FILES -->
+<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+</html>
