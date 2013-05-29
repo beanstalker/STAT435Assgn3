@@ -91,6 +91,13 @@ table(vdv.clin$OS.event,ctint,dnn=c("Death rate","Group"))
 
 ---
 
+## Relapse & Death
+Relapse rates are approximately 50% across all subtypes except Luminal A and B. Luminal B has a high relapse hate and Luminal A a low one. Luminal A also has a very low death rate, as does 'Normal-ike'.
+
+Amongst the 4 groups, group 2 has a very low relapse and death rate.
+
+---
+
 ## Singular value decomposition metagene
 ```{r results='hide'}
 xx<-svd(yy)

@@ -21,5 +21,6 @@ biocLite("multtest")
 biocLite("survival")
 
 slidify("index.Rmd")
+publish(user="beanstalker", repo="STAT435Assgn3", host='github')
 
 save.image("~/Documents/University/Otago/Fourth Year/STAT435/Assignment3/rdata.RData")

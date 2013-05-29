@@ -52,9 +52,146 @@ biocLite(&quot;survival&quot;)
 </code></pre>
 
 <pre><code class="r">library(survival)
-library(pamr)
-library(gplots)
+</code></pre>
+
+<pre><code>## Loading required package: splines
+</code></pre>
+
+<pre><code class="r">library(pamr)
+</code></pre>
+
+<pre><code>## Loading required package: cluster
+</code></pre>
+
+<pre><code class="r">library(gplots)
+</code></pre>
+
+<pre><code>## Loading required package: gtools
+</code></pre>
+
+<pre><code>## Loading required package: gdata
+</code></pre>
+
+<pre><code>## gdata: read.xls support for &#39;XLS&#39; (Excel 97-2004) files ENABLED.
+</code></pre>
+
+<pre><code>## ```
+
+</code></pre>
+
+<h2>gdata: read.xls support for &#39;XLSX&#39; (Excel 2007+) files ENABLED.</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Attaching package: &#39;gdata&#39;</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>The following object is masked from &#39;package:stats&#39;:</h2>
+
+<h2>nobs</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>The following object is masked from &#39;package:utils&#39;:</h2>
+
+<h2>object.size</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Loading required package: caTools</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Loading required package: grid</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Loading required package: KernSmooth</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>KernSmooth 2.23 loaded Copyright M. P. Wand 1997-2009</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Loading required package: MASS</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>Attaching package: &#39;gplots&#39;</h2>
+
+<pre><code>
+</code></pre>
+
+<h2>The following object is masked from &#39;package:stats&#39;:</h2>
+
+<h2>lowess</h2>
+
+<pre><code>
+```r
 library(multtest)
+</code></pre>
+
+<pre><code>## Loading required package: Biobase
+</code></pre>
+
+<pre><code>## Loading required package: BiocGenerics
+</code></pre>
+
+<pre><code>## Loading required package: parallel
+</code></pre>
+
+<pre><code>## Attaching package: &#39;BiocGenerics&#39;
+</code></pre>
+
+<pre><code>## The following objects are masked from &#39;package:parallel&#39;:
+## 
+## clusterApply, clusterApplyLB, clusterCall, clusterEvalQ, clusterExport,
+## clusterMap, parApply, parCapply, parLapply, parLapplyLB, parRapply,
+## parSapply, parSapplyLB
+</code></pre>
+
+<pre><code>## The following object is masked from &#39;package:gdata&#39;:
+## 
+## combine
+</code></pre>
+
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+## xtabs
+</code></pre>
+
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+## anyDuplicated, as.data.frame, cbind, colnames, duplicated, eval, Filter,
+## Find, get, intersect, lapply, Map, mapply, match, mget, order, paste,
+## pmax, pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce, rep.int,
+## rownames, sapply, setdiff, sort, table, tapply, union, unique, unlist
+</code></pre>
+
+<pre><code>## Welcome to Bioconductor
+## 
+## Vignettes contain introductory material; view with &#39;browseVignettes()&#39;. To
+## cite Bioconductor, see &#39;citation(&quot;Biobase&quot;)&#39;, and for packages
+## &#39;citation(&quot;pkgname&quot;)&#39;.
+</code></pre>
+
+<pre><code>## Attaching package: &#39;multtest&#39;
+</code></pre>
+
+<pre><code>## The following object is masked from &#39;package:gplots&#39;:
+## 
+## wapply
 </code></pre>
 
 <pre><code>load(&quot;./STAT435-VDVdata.RData&quot;)
@@ -215,6 +352,19 @@ table(ctint)
 
       <slide class="" id="slide-9" style="background:;">
   <hgroup>
+    <h2>Relapse &amp; Death</h2>
+  </hgroup>
+  <article>
+    <p>Relapse rates are approximately 50% across all subtypes except Luminal A and B. Luminal B has a high relapse hate and Luminal A a low one. Luminal A also has a very low death rate, as does &#39;Normal-ike&#39;.</p>
+
+<p>Amongst the 4 groups, group 2 has a very low relapse and death rate.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-10" style="background:;">
+  <hgroup>
     <h2>Singular value decomposition metagene</h2>
   </hgroup>
   <article>
@@ -230,7 +380,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-10" style="background:;">
+      <slide class="" id="slide-11" style="background:;">
   <hgroup>
     <h2>Metagene and heatmap</h2>
   </hgroup>
@@ -246,7 +396,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-11" style="background:;">
+      <slide class="" id="slide-12" style="background:;">
   <hgroup>
     <h2>Boxplot showing distribution of metagene values accross intrinsic subtype</h2>
   </hgroup>
@@ -260,7 +410,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-12" style="background:;">
+      <slide class="" id="slide-13" style="background:;">
   <hgroup>
     <h2>Boxplot showing distribution of metagene values accross ER status</h2>
   </hgroup>
@@ -274,7 +424,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-13" style="background:;">
+      <slide class="" id="slide-14" style="background:;">
   <hgroup>
     <h2>Boxplot showing distribution of metagene values accross grade</h2>
   </hgroup>
@@ -288,7 +438,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-14" style="background:;">
+      <slide class="" id="slide-15" style="background:;">
   <hgroup>
     <h2>Information</h2>
   </hgroup>
@@ -301,7 +451,7 @@ ord &lt;- order(mg.rnk)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-15" style="background:;">
+      <slide class="" id="slide-16" style="background:;">
   <hgroup>
     <h2>Classification and survival analysis</h2>
   </hgroup>
@@ -322,7 +472,7 @@ ts.dat$y &lt;- vdv.clin$RFS.event[ts]
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-16" style="background:;">
+      <slide class="" id="slide-17" style="background:;">
   <hgroup>
     <h2>Relapse and non-relapse class between training and test sets</h2>
   </hgroup>
@@ -332,7 +482,7 @@ ts.dat$y &lt;- vdv.clin$RFS.event[ts]
 
 <pre><code>## 
 ##   0   1 
-## 122  78
+## 117  83
 </code></pre>
 
 <pre><code class="r">table(ts.dat$y)
@@ -340,14 +490,14 @@ ts.dat$y &lt;- vdv.clin$RFS.event[ts]
 
 <pre><code>## 
 ##  0  1 
-## 55 40
+## 60 35
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-17" style="background:;">
+      <slide class="" id="slide-18" style="background:;">
   <hgroup>
     <h2>PAMR and CV plot</h2>
   </hgroup>
@@ -365,7 +515,7 @@ cv &lt;- pamr.cv(train, tr.dat)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-18" style="background:;">
+      <slide class="" id="slide-19" style="background:;">
   <hgroup>
     <h2>Geneplots</h2>
   </hgroup>
@@ -379,7 +529,7 @@ cv &lt;- pamr.cv(train, tr.dat)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-19" style="background:;">
+      <slide class="" id="slide-20" style="background:;">
   <hgroup>
     <h2>Predictions</h2>
   </hgroup>
@@ -390,8 +540,8 @@ table(ts.dat$y, pred.ts)
 
 <pre><code>##    pred.ts
 ##      0  1
-##   0 36 19
-##   1 13 27
+##   0 43 17
+##   1 12 23
 </code></pre>
 
 <pre><code class="r">pred.tr &lt;- pamr.predict(train, tr.dat$x, threshold = 1.5)
@@ -400,15 +550,15 @@ table(tr.dat$y, pred.tr)
 
 <pre><code>##    pred.tr
 ##      0  1
-##   0 87 35
-##   1 26 52
+##   0 84 33
+##   1 23 60
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-20" style="background:;">
+      <slide class="" id="slide-21" style="background:;">
   <hgroup>
     <h2>Fisher test on test set</h2>
   </hgroup>
@@ -420,20 +570,20 @@ table(tr.dat$y, pred.tr)
 ##  Fisher&#39;s Exact Test for Count Data
 ## 
 ## data:  table(ts.dat$y, pred.ts)
-## p-value = 0.001885
+## p-value = 0.0005305
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
-##   1.53 10.27
+##   1.815 13.138
 ## sample estimates:
 ## odds ratio 
-##      3.874
+##      4.759
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-21" style="background:;">
+      <slide class="" id="slide-22" style="background:;">
   <hgroup>
     <h2>Fisher test on training set</h2>
   </hgroup>
@@ -445,20 +595,20 @@ table(tr.dat$y, pred.tr)
 ##  Fisher&#39;s Exact Test for Count Data
 ## 
 ## data:  table(tr.dat$y, pred.tr)
-## p-value = 2.095e-07
+## p-value = 7.979e-10
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
-##  2.580 9.622
+##   3.396 13.078
 ## sample estimates:
 ## odds ratio 
-##      4.927
+##      6.568
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-22" style="background:;">
+      <slide class="" id="slide-23" style="background:;">
   <hgroup>
     <h2>Sensitivity and specificty</h2>
   </hgroup>
@@ -466,19 +616,19 @@ table(tr.dat$y, pred.tr)
     <p>Test set</p>
 
 <ul>
-<li>Sensitivity: 67.5 %</li>
-<li>Specificity: 65.4545 %</li>
-<li>PPV: 58.6957 %</li>
-<li>NPV: 73.4694 %</li>
+<li>Sensitivity: 65.7143 %</li>
+<li>Specificity: 71.6667 %</li>
+<li>PPV: 57.5 %</li>
+<li>NPV: 78.1818 %</li>
 </ul>
 
 <p>Training set</p>
 
 <ul>
-<li>Sensitivity: 66.6667 %</li>
-<li>Specificity: 71.3115 %</li>
-<li>PPV: 59.7701 %</li>
-<li>NPV: 76.9912 %</li>
+<li>Sensitivity: 72.2892 %</li>
+<li>Specificity: 71.7949 %</li>
+<li>PPV: 64.5161 %</li>
+<li>NPV: 78.5047 %</li>
 </ul>
 
 <p>As expected the training set performs much better, as it was used to create the predictor.</p>
@@ -487,7 +637,7 @@ table(tr.dat$y, pred.tr)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-23" style="background:;">
+      <slide class="" id="slide-24" style="background:;">
   <hgroup>
     <h2>Survival analysis</h2>
   </hgroup>
@@ -500,7 +650,7 @@ ts.clin &lt;- vdv.clin[ts, ]
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-24" style="background:;">
+      <slide class="" id="slide-25" style="background:;">
   <hgroup>
     <h2>Survival plot of training set</h2>
   </hgroup>
@@ -514,7 +664,7 @@ ts.clin &lt;- vdv.clin[ts, ]
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-25" style="background:;">
+      <slide class="" id="slide-26" style="background:;">
   <hgroup>
     <h2>Survival plot of training set</h2>
   </hgroup>
@@ -527,17 +677,17 @@ ts.clin &lt;- vdv.clin[ts, ]
 ##     pred.tr)
 ## 
 ##             N Observed Expected (O-E)^2/E (O-E)^2/V
-## pred.tr=0 113       26       51      12.3      35.9
-## pred.tr=1  87       52       27      23.2      35.9
+## pred.tr=0 107       23     52.1      16.2      44.1
+## pred.tr=1  93       60     30.9      27.4      44.1
 ## 
-##  Chisq= 35.9  on 1 degrees of freedom, p= 2.09e-09
+##  Chisq= 44.1  on 1 degrees of freedom, p= 3.09e-11
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-26" style="background:;">
+      <slide class="" id="slide-27" style="background:;">
   <hgroup>
     <h2>Survival plot of test set</h2>
   </hgroup>
@@ -551,7 +701,7 @@ ts.clin &lt;- vdv.clin[ts, ]
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-27" style="background:;">
+      <slide class="" id="slide-28" style="background:;">
   <hgroup>
     <h2>Survival plot of test set</h2>
   </hgroup>
@@ -564,17 +714,17 @@ ts.clin &lt;- vdv.clin[ts, ]
 ##     pred.ts)
 ## 
 ##            N Observed Expected (O-E)^2/E (O-E)^2/V
-## pred.ts=0 49       13     23.1      4.45      10.6
-## pred.ts=1 46       27     16.9      6.11      10.6
+## pred.ts=0 55       12     24.2      6.18      20.7
+## pred.ts=1 40       23     10.8     13.91      20.7
 ## 
-##  Chisq= 10.6  on 1 degrees of freedom, p= 0.0011
+##  Chisq= 20.7  on 1 degrees of freedom, p= 5.43e-06
 </code></pre>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-28" style="background:;">
+      <slide class="" id="slide-29" style="background:;">
   <hgroup>
     <h2>Survival plot using Luminal A subtype predictor</h2>
   </hgroup>
@@ -593,7 +743,7 @@ table(int.pred, vdv.clin$RFS.event)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-29" style="background:;">
+      <slide class="" id="slide-30" style="background:;">
   <hgroup>
     <h2>Survival plot using Luminal A subtype predictor</h2>
   </hgroup>
@@ -618,7 +768,7 @@ table(int.pred, vdv.clin$RFS.event)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-30" style="background:;">
+      <slide class="" id="slide-31" style="background:;">
   <hgroup>
     <h2>Survival plot using Luminal A subtype predictor</h2>
   </hgroup>
@@ -632,7 +782,7 @@ table(int.pred, vdv.clin$RFS.event)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-31" style="background:;">
+      <slide class="" id="slide-32" style="background:;">
   <hgroup>
     <h2>Survival plot using Luminal A subtype predictor</h2>
   </hgroup>
@@ -655,7 +805,7 @@ table(int.pred, vdv.clin$RFS.event)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-32" style="background:;">
+      <slide class="" id="slide-33" style="background:;">
   <hgroup>
     <h2>Sensitivity and specificity of Luminal A subtype predictor</h2>
   </hgroup>
@@ -675,7 +825,7 @@ table(int.pred, vdv.clin$RFS.event)
   <!-- Presenter Notes -->
 </slide>
 
-      <slide class="" id="slide-33" style="background:;">
+      <slide class="" id="slide-34" style="background:;">
   <hgroup>
     
   </hgroup>

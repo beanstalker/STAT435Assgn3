@@ -21,9 +21,154 @@ biocLite("survival")
 
 ```r
 library(survival)
+```
+
+```
+## Loading required package: splines
+```
+
+```r
 library(pamr)
+```
+
+```
+## Loading required package: cluster
+```
+
+```r
 library(gplots)
+```
+
+```
+## Loading required package: gtools
+```
+
+```
+## Loading required package: gdata
+```
+
+```
+## gdata: read.xls support for 'XLS' (Excel 97-2004) files ENABLED.
+```
+
+```
+## ```
+
+```
+## gdata: read.xls support for 'XLSX' (Excel 2007+) files ENABLED.
+```
+
+```
+## Attaching package: 'gdata'
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+## nobs
+```
+
+```
+## The following object is masked from 'package:utils':
+## 
+## object.size
+```
+
+```
+## Loading required package: caTools
+```
+
+```
+## Loading required package: grid
+```
+
+```
+## Loading required package: KernSmooth
+```
+
+```
+## KernSmooth 2.23 loaded Copyright M. P. Wand 1997-2009
+```
+
+```
+## Loading required package: MASS
+```
+
+```
+## Attaching package: 'gplots'
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+## lowess
+```
+
+```r
 library(multtest)
+```
+
+```
+## Loading required package: Biobase
+```
+
+```
+## Loading required package: BiocGenerics
+```
+
+```
+## Loading required package: parallel
+```
+
+```
+## Attaching package: 'BiocGenerics'
+```
+
+```
+## The following objects are masked from 'package:parallel':
+## 
+## clusterApply, clusterApplyLB, clusterCall, clusterEvalQ, clusterExport,
+## clusterMap, parApply, parCapply, parLapply, parLapplyLB, parRapply,
+## parSapply, parSapplyLB
+```
+
+```
+## The following object is masked from 'package:gdata':
+## 
+## combine
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+## xtabs
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+## anyDuplicated, as.data.frame, cbind, colnames, duplicated, eval, Filter,
+## Find, get, intersect, lapply, Map, mapply, match, mget, order, paste,
+## pmax, pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce, rep.int,
+## rownames, sapply, setdiff, sort, table, tapply, union, unique, unlist
+```
+
+```
+## Welcome to Bioconductor
+## 
+## Vignettes contain introductory material; view with 'browseVignettes()'. To
+## cite Bioconductor, see 'citation("Biobase")', and for packages
+## 'citation("pkgname")'.
+```
+
+```
+## Attaching package: 'multtest'
+```
+
+```
+## The following object is masked from 'package:gplots':
+## 
+## wapply
 ```
 
 ```
@@ -165,6 +310,13 @@ table(vdv.clin$OS.event, ctint, dnn = c("Death rate", "Group"))
 
 ---
 
+## Relapse & Death
+Relapse rates are approximately 50% across all subtypes except Luminal A and B. Luminal B has a high relapse hate and Luminal A a low one. Luminal A also has a very low death rate, as does 'Normal-ike'.
+
+Amongst the 4 groups, group 2 has a very low relapse and death rate.
+
+---
+
 ## Singular value decomposition metagene
 
 ```r
@@ -254,7 +406,7 @@ table(tr.dat$y)
 ```
 ## 
 ##   0   1 
-## 122  78
+## 117  83
 ```
 
 ```r
@@ -264,7 +416,7 @@ table(ts.dat$y)
 ```
 ## 
 ##  0  1 
-## 55 40
+## 60 35
 ```
 
 
@@ -308,8 +460,8 @@ table(ts.dat$y, pred.ts)
 ```
 ##    pred.ts
 ##      0  1
-##   0 36 19
-##   1 13 27
+##   0 43 17
+##   1 12 23
 ```
 
 ```r
@@ -320,8 +472,8 @@ table(tr.dat$y, pred.tr)
 ```
 ##    pred.tr
 ##      0  1
-##   0 87 35
-##   1 26 52
+##   0 84 33
+##   1 23 60
 ```
 
 
@@ -338,13 +490,13 @@ fisher.test(table(ts.dat$y, pred.ts))
 ## 	Fisher's Exact Test for Count Data
 ## 
 ## data:  table(ts.dat$y, pred.ts)
-## p-value = 0.001885
+## p-value = 0.0005305
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
-##   1.53 10.27
+##   1.815 13.138
 ## sample estimates:
 ## odds ratio 
-##      3.874
+##      4.759
 ```
 
 
@@ -361,13 +513,13 @@ fisher.test(table(tr.dat$y, pred.tr))
 ## 	Fisher's Exact Test for Count Data
 ## 
 ## data:  table(tr.dat$y, pred.tr)
-## p-value = 2.095e-07
+## p-value = 7.979e-10
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
-##  2.580 9.622
+##   3.396 13.078
 ## sample estimates:
 ## odds ratio 
-##      4.927
+##      6.568
 ```
 
 
@@ -377,18 +529,18 @@ fisher.test(table(tr.dat$y, pred.tr))
 Test set
 
 
-- Sensitivity: 67.5 %
-- Specificity: 65.4545 %
-- PPV: 58.6957 %
-- NPV: 73.4694 %
+- Sensitivity: 65.7143 %
+- Specificity: 71.6667 %
+- PPV: 57.5 %
+- NPV: 78.1818 %
 
 Training set
 
 
-- Sensitivity: 66.6667 %
-- Specificity: 71.3115 %
-- PPV: 59.7701 %
-- NPV: 76.9912 %
+- Sensitivity: 72.2892 %
+- Specificity: 71.7949 %
+- PPV: 64.5161 %
+- NPV: 78.5047 %
 
 As expected the training set performs much better, as it was used to create the predictor.
 
@@ -427,10 +579,10 @@ survdiff(Surv(tr.clin$RFS.months, tr.clin$RFS.event) ~ pred.tr)
 ##     pred.tr)
 ## 
 ##             N Observed Expected (O-E)^2/E (O-E)^2/V
-## pred.tr=0 113       26       51      12.3      35.9
-## pred.tr=1  87       52       27      23.2      35.9
+## pred.tr=0 107       23     52.1      16.2      44.1
+## pred.tr=1  93       60     30.9      27.4      44.1
 ## 
-##  Chisq= 35.9  on 1 degrees of freedom, p= 2.09e-09
+##  Chisq= 44.1  on 1 degrees of freedom, p= 3.09e-11
 ```
 
 
@@ -459,10 +611,10 @@ survdiff(Surv(ts.clin$RFS.months, ts.clin$RFS.event) ~ pred.ts)
 ##     pred.ts)
 ## 
 ##            N Observed Expected (O-E)^2/E (O-E)^2/V
-## pred.ts=0 49       13     23.1      4.45      10.6
-## pred.ts=1 46       27     16.9      6.11      10.6
+## pred.ts=0 55       12     24.2      6.18      20.7
+## pred.ts=1 40       23     10.8     13.91      20.7
 ## 
-##  Chisq= 10.6  on 1 degrees of freedom, p= 0.0011
+##  Chisq= 20.7  on 1 degrees of freedom, p= 5.43e-06
 ```
 
 
